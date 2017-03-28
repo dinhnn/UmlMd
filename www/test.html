@@ -1,9 +1,323 @@
 <html>
-<body>
-  <img src="/png?
-    User -> (Start);
-    User --> (Use the application) : A small label;
-    :Main Admin: ---> (Use the application) : This is\nyet another\nlabel;
-  ">
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+	<style>
+		.CodeMirror-fullscreen {
+			right:300px!important;			
+			width: calc(100% - 300px)!important;			
+		}
+		.CodeMirror-sided {
+			left:auto!important;
+			padding:0;			
+			width: calc(50% - 300px)!important;			
+		}
+		.editor-preview-side{
+			left:0!important;
+			right:auto!important;
+		}
+		#tip{
+			position:fixed;
+			right:0px;
+			width:300px;
+			top:0px;			
+			z-index:9999;
+			border-left:1px solid gray;
+			height:100%;			
+		}
+		#tip > select{
+			width:300px;
+			height:32px;			
+		}
+		#tip > div{
+			height:calc(100% - 32px);
+			/*display:none;*/
+			overflow-y:auto;			
+		}
+		#tip > div img{
+			max-width:250px;
+		}
+		#uc{
+			display:none;
+		}
+	</style>
+</head>
+<body>  
 </body>
+  <textarea>
+  </textarea>
+  <script>
+	var simplemde = new SimpleMDE();
+	simplemde.toggleSideBySide();
+  </script>
+  <div id="tip">
+	  <select>
+	  	<option value="uc">Use Case Diagram</option>
+	  	<option value="seq">Sequence Diagram</option>
+	  	<option value="cd">Class Diagram</option>
+	  	<option value="ad">Activity Diagram</option>
+	  	<option value="cd">Component Diagram</option>
+	  	<option value="sd">State Diagram</option>
+	  	<option value="od">Object Diagram</option>
+	  	<option value="dd">Deployment Diagram</option>
+	  	<option value="td">Timing Diagram</option>
+	  </select>
+	  <div id="uc">
+	  	<div class="Usecases">
+			<pre>
+![](/svg?			
+  {{First usecase}};;
+  {{Another usecase}} as {{UC2}};;  
+  usecase UC3;;
+  usecase {{Last\nusecase}} as UC4;;
+)
+			</pre>
+			<img src="/svg?
+{{First usecase}};;
+{{Another usecase}} as {{UC2}};;  
+usecase UC3;;
+usecase {{Last usecase}} as UC4;;
+			"/>	
+		</div>
+		<div class="Actors">
+			<pre>
+![](/svg?  
+  :First Actor:;;
+  :Another\nactor: as Men2;;  
+  actor Men3;;
+  actor :Last actor: as Men4;;
+)
+			</pre>
+			<img src="/svg?
+:First Actor:;;
+:Another\nactor: as Men2;;  
+actor Men3;;
+actor :Last actor: as Men4;;
+			"/>	
+		</div>
+		<div class="description">
+			<pre>
+![](/svg?
+  usecase UC1 as "You can use ;;
+  several lines to define your usecase;;
+  You can also use separators. ;;
+  --;;
+  Several separators are possible. ;;
+  ==;;
+  And you can add titles:;;
+  --Conclusion--;;
+  This allows large description.";;
+)
+			</pre>
+			<img src="/svg?
+usecase UC1 as %22You can use ;;
+several lines to define your usecase;;
+You can also use separators. ;;
+--;;
+Several separators are possible. ;;
+==;;
+And you can add titles:;;
+--Conclusion--;;
+This allows large description.%22;;
+			"/>	
+		</div>	  	
+		<div class="example">
+			<pre>
+![](/svg?
+  User -> {{Start}};;
+  User --> {{Use the application}} : A small label;;
+  :Main Admin: ---> {{Use the application}} : This is\nyet another\nlabel;;
+)
+			</pre>
+			<img src="/svg?
+User -> {{Start}};;
+User --> {{Use the application}} : A small label;;
+:Main Admin: ---> {{Use the application}} : This is\nyet another\nlabel;;
+			"/>	
+		</div>	  			  	
+
+		<div class="Extension">
+			<pre>
+![](/svg?  
+  :Main Admin: as Admin;;
+  (Use the application) as (Use);;
+  User <|-- Admin;;
+  (Start) <|-- (Use);;
+)
+			</pre>
+			<img src="/svg?
+:Main Admin: as Admin;;
+(Use the application) as (Use);;
+User <|-- Admin;;
+(Start) <|-- (Use);;
+			"/>	
+		</div>	  			  	
+
+		<div class="notes">
+			<pre>
+![](/svg?
+  :Main Admin: as Admin;;
+  {{Use the application}} as {{Use}};;
+
+  User -> {{Start}};;
+  User --> {{Use}};;
+
+  Admin ---> {{Use}};;
+
+  note right of Admin : This is an example. ;;
+
+  note right of {{Use}};;
+    A note can also;;
+    be on several lines;;
+  end note;;
+
+  note "This note is connected\nto several objects." as N2;;
+  {{Start}} .. N2;;
+  N2 .. {{Use}};;  
+)
+			</pre>
+			<img src="/svg?
+:Main Admin: as Admin;;
+{{Use the application}} as {{Use}};;
+User -> {{Start}};;
+User --> {{Use}};;
+Admin ---> {{Use}};;
+note right of Admin : This is an example. ;;
+note right of {{Use}};;
+  A note can also;;
+  be on several lines;;
+end note;;
+note %22This note is connected\nto several objects.%22 as N2;;
+{{Start}} .. N2;;
+N2 .. {{Use}};;
+  			"/>	
+		</div>	  			  	
+
+		<div class="Stereotypes">
+			<pre>
+![](/svg?  
+  User << Human >>;;
+  :Main Database: as MySql << Application >>;;
+  {{Start}} << One Shot >>;;
+  {{Use the application}} as {{Use}} << Main >>;;
+
+  User -> {{Start}};;
+  User --> {{Use}};;
+
+  MySql --> {{Use}};;
+)
+			</pre>
+			<img src="/svg?
+User << Human >>;;
+:Main Database: as MySql << Application >>;;
+{{Start}} << One Shot >>;;
+{{Use the application}} as {{Use}} << Main >>;;
+User -> {{Start}};;
+User --> {{Use}};;
+MySql --> {{Use}};;
+			"/>	
+		</div>	  			  	
+
+		<div class="direction">
+			<pre>
+![](/svg?
+  :user: -left-> {{dummyLeft}};; 
+  :user: -right-> {{dummyRight}};; 
+  :user: -up-> {{dummyUp}};;
+  :user: -down-> {{dummyDown}};;
+)
+			</pre>
+			<img src="/svg?
+:user: -left-> {{dummyLeft}};; 
+:user: -right-> {{dummyRight}};; 
+:user: -up-> {{dummyUp}};;
+:user: -down-> {{dummyDown}};;
+			"/>	
+		</div>	  			  	
+
+		<div class="Complete">
+			<pre>
+![](/svg?
+  left to right direction;;
+  actor customer;;
+  actor clerk;;
+  rectangle checkout {;;
+    customer -- {{checkout}};;
+    {{checkout}} .> {{payment}} : include;;
+    {{help}} .> {{checkout}} : extends;;
+    {{checkout}} -- clerk;;
+  }
+)
+			</pre>
+			<img src="/svg?
+left to right direction;;
+actor customer;;
+actor clerk;;
+rectangle checkout {;;
+  customer -- {{checkout}};;
+  {{checkout}} .> {{payment}} : include;;
+  {{help}} .> {{checkout}} : extends;;
+  {{checkout}} -- clerk;;
+}
+			"/>	
+		</div>
+	  </div>
+	  
+	  <div id="seq">
+	  	<div class="basic">
+			<pre>
+![](/svg?
+  Alice -> Bob: Authentication Request;;
+  Bob --> Alice: Authentication Response;;
+  Alice -> Bob: Another authentication Request;;
+  Alice <-- Bob: another authentication Response;;
+)
+			</pre>
+			<img src="/svg?
+Alice -> Bob: Authentication Request;;
+Bob --> Alice: Authentication Response;;
+Alice -> Bob: Another authentication Request;;
+Alice <-- Bob: another authentication Response;;
+			"/>	
+		</div>
+	  	<div class="participant">
+			<pre>
+![](/svg?  
+  actor Foo1;;
+  boundary Foo2;;
+  control Foo3;;
+  entity Foo4;;
+  database Foo5;;
+  Foo1 -> Foo2 : To boundary;;
+  Foo1 -> Foo3 : To control;;
+  Foo1 -> Foo4 : To entity;;
+  Foo1 -> Foo5 : To database;;
+)
+			</pre>
+			<img src="/svg?
+actor Foo1;;
+boundary Foo2;;
+control Foo3;;
+entity Foo4;;
+database Foo5;;
+Foo1 -> Foo2 : To boundary;;
+Foo1 -> Foo3 : To control;;
+Foo1 -> Foo4 : To entity;;
+Foo1 -> Foo5 : To database;;
+			"/>	
+		</div>
+
+	  	<div class="">
+			<pre>
+![](/svg?  
+)
+			</pre>
+			<img src="/svg?
+			"/>	
+		</div>
+		
+	  
+	  </div>
+  </div>
+  
 </html>
