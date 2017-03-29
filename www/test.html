@@ -34,290 +34,1045 @@
 			/*display:none;*/
 			overflow-y:auto;			
 		}
+		#tip > div > fieldset{
+			border: 1px solid;
+			margin:4px;
+			overflow-x:auto;			
+		}
+		#tip > div > fieldset >legend{
+			cursor:hand;
+		}
 		#tip > div img{
 			max-width:250px;
 		}
-		#uc{
+		#plantuml,#uc{
+			display:none;
+		}
+		body>pre{
 			display:none;
 		}
 	</style>
 </head>
 <body>  
-</body>
   <textarea>
   </textarea>
-  <script>
-	var simplemde = new SimpleMDE();
-	simplemde.toggleSideBySide();
-  </script>
+<pre id="uc">
+Usecases
+@startuml
+
+(First usecase)
+(Another usecase) as (UC2)  
+usecase UC3
+usecase (Last\nusecase) as UC4
+
+@enduml
+
+Actors
+@startuml
+
+:First Actor:
+:Another\nactor: as Men2  
+actor Men3
+actor :Last actor: as Men4
+
+@enduml
+Usecases description
+@startuml
+
+usecase UC1 as "You can use
+several lines to define your usecase.
+You can also use separators.
+--
+Several separators are possible.
+==
+And you can add titles:
+..Conclusion..
+This allows large description."
+
+@enduml
+Basic example
+@startuml
+
+User -> (Start)
+User --> (Use the application) : A small label
+
+:Main Admin: ---> (Use the application) : This is\nyet another\nlabel
+
+@enduml
+Extension
+@startuml
+:Main Admin: as Admin
+(Use the application) as (Use)
+
+User <|-- Admin
+(Start) <|-- (Use)
+
+@enduml
+Using notes
+@startuml
+:Main Admin: as Admin
+(Use the application) as (Use)
+
+User -> (Start)
+User --> (Use)
+
+Admin ---> (Use)
+
+note right of Admin : This is an example.
+
+note right of (Use)
+  A note can also
+  be on several lines
+end note
+
+note "This note is connected\nto several objects." as N2
+(Start) .. N2
+N2 .. (Use)
+@enduml
+Stereotypes
+@startuml
+User << Human >>
+:Main Database: as MySql << Application >>
+(Start) << One Shot >>
+(Use the application) as (Use) << Main >>
+
+User -> (Start)
+User --> (Use)
+
+MySql --> (Use)
+
+@enduml
+Changing arrows direction
+@startuml
+:user: -left-> (dummyLeft) 
+:user: -right-> (dummyRight) 
+:user: -up-> (dummyUp)
+:user: -down-> (dummyDown)
+@enduml
+
+Complete example
+@startuml
+left to right direction
+actor customer
+actor clerk
+rectangle checkout {
+  customer -- (checkout)
+  (checkout) .> (payment) : include
+  (help) .> (checkout) : extends
+  (checkout) -- clerk
+}
+@enduml
+
+</pre>
+<pre id="seq">
+Basic examples
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+@enduml
+Declaring participant
+@startuml
+actor Foo1
+boundary Foo2
+control Foo3
+entity Foo4
+database Foo5
+Foo1 -> Foo2 : To boundary
+Foo1 -> Foo3 : To control
+Foo1 -> Foo4 : To entity
+Foo1 -> Foo5 : To database
+
+@enduml
+Message to Self
+@startuml
+Alice->Alice: This is a signal to self.\nIt also demonstrates\nmultiline \ntext
+@enduml
+Change arrow style
+@startuml
+Bob ->x Alice
+Bob -> Alice
+Bob ->> Alice
+Bob -\ Alice
+Bob \\- Alice
+Bob //-- Alice
+
+Bob ->o Alice
+Bob o\\-- Alice
+
+Bob <-> Alice
+Bob <->o Alice
+@enduml
+Message sequence numbering
+
+@startuml
+autonumber
+Bob -> Alice : Authentication Request
+Bob <- Alice : Authentication Response
+
+autonumber 15
+Bob -> Alice : Another authentication Request
+Bob <- Alice : Another authentication Response
+
+autonumber 40 10
+Bob -> Alice : Yet another authentication Request
+Bob <- Alice : Yet another authentication Response
+
+@enduml
+Grouping message
+@startuml
+Alice -> Bob: Authentication Request
+
+alt successful case
+
+    Bob -> Alice: Authentication Accepted
+    
+else some kind of failure
+
+    Bob -> Alice: Authentication Failure
+    group My own label
+    	Alice -> Log : Log attack start
+        loop 1000 times
+            Alice -> Bob: DNS Attack
+        end
+    	Alice -> Log : Log attack end
+    end
+    
+else Another type of failure
+
+   Bob -> Alice: Please repeat
+   
+end
+@enduml
+Notes on messages
+@startuml
+Alice->Bob : hello
+note left: this is a first note
+
+Bob->Alice : ok
+note right: this is another note
+
+Bob->Bob : I am thinking
+note left
+	a note
+	can also be defined
+	on several lines
+end note
+@enduml
+Divider
+@startuml
+
+== Initialization ==
+
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+== Repetition ==
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+
+@enduml
+Reference
+@startuml
+participant Alice
+actor Bob
+
+ref over Alice, Bob : init
+
+Alice -> Bob : hello
+
+ref over Bob
+  This can be on
+  several lines
+end ref
+@enduml
+Delay
+@startuml
+
+Alice -> Bob: Authentication Request
+...
+Bob --> Alice: Authentication Response
+...5 minutes latter...
+Bob --> Alice: Bye !
+
+@enduml
+Space
+@startuml
+
+Alice -> Bob: message 1
+Bob --> Alice: ok
+|||
+Alice -> Bob: message 2
+Bob --> Alice: ok
+||45||
+Alice -> Bob: message 3
+Bob --> Alice: ok
+
+@enduml
+Lifeline Activation and Destruction
+@startuml
+participant User
+
+User -> A: DoWork
+activate A
+
+A -> B: << createRequest >>
+activate B
+
+B -> C: DoWork
+activate C
+C --> B: WorkDone
+destroy C
+
+B --> A: RequestCreated
+deactivate B
+
+A -> User: Done
+deactivate A
+
+@enduml
+Participant creation
+@startuml
+Bob -> Alice : hello
+
+create Other
+Alice -> Other : new
+
+create control String
+Alice -> String
+note right : You can also put notes!
+
+Alice --> Bob : ok
+
+@enduml
+Stereotypes and Spots
+
+@startuml
+
+participant "Famous Bob" as Bob << Generated >>
+participant Alice << (C,#ADD1B2) Testable >>
+
+Bob->Alice: First message
+
+@enduml
+
+</pre>
+<pre id="class">
+Relations between classes
+@startuml
+Class01 <|-- Class02
+Class03 *-- Class04
+Class05 o-- Class06
+Class07 <.. Class08
+Class09 -- Class10
+@enduml
+Label on relations
+@startuml
+
+Class01 "1" *-- "many" Class02 : contains
+
+Class03 o-- Class04 : aggregation
+
+Class05 --> "1" Class06
+
+@enduml
+Adding methods
+@startuml
+Object <|-- ArrayList
+
+class Object {
+  void equals()
+}
+
+class ArrayList {
+   size() : Integer
+   elementData : Object[]
+}
+
+@enduml
+Defining visibility
+@startuml
+
+class Dummy {
+ -field1
+ #field2
+ ~method1()
+ +method2()
+}
+
+@enduml
+Abstract and Static
+@startuml
+class Dummy {
+  {static} String id
+  {abstract} void methods()
+}
+@enduml
+Notes and stereotypes
+
+@startuml
+class Object << general >>
+Object <|--- ArrayList
+
+note top of Object : In java, every class\nextends this one.
+
+note "This is a floating note" as N1
+note "This note is connected\nto several objects." as N2
+Object .. N2
+N2 .. ArrayList
+
+class Foo
+note left: On last defined class
+
+@enduml
+
+Abstract class and interface
+@startuml
+
+abstract class AbstractList
+abstract AbstractCollection
+interface List
+interface Collection
+
+List <|-- AbstractList
+Collection <|-- AbstractCollection
+
+Collection <|- List
+AbstractCollection <|- AbstractList
+AbstractList <|-- ArrayList
+
+class ArrayList {
+  Object[] elementData
+  size()
+}
+
+enum TimeUnit {
+  DAYS
+  HOURS
+  MINUTES
+}
+
+annotation SuppressWarnings
+
+@enduml
+Packages style
+@startuml
+package foo1 << Node >> {
+  class Class1
+}
+
+package foo2 << Rectangle >> {
+  class Class2
+}
+
+package foo3 << Folder >> {
+  class Class3
+}
+
+package foo4 << Frame >> {
+  class Class4
+}
+
+package foo5 << Cloud >> {
+  class Class5
+}
+
+package foo6 << Database >> {
+  class Class6
+}
+
+@enduml
+Changing arrows direction
+
+@startuml
+foo -left-> dummyLeft 
+foo -right-> dummyRight 
+foo -up-> dummyUp 
+foo -down-> dummyDown
+@enduml
+Association classes
+
+@startuml
+class Student {
+  Name
+}
+Student "0..*" - "1..*" Course
+(Student, Course) .. Enrollment
+
+class Enrollment {
+  drop()
+  cancel()
+}
+@enduml
+</pre>
+<pre id="activity">
+Simple Activity
+@startuml
+
+(*) --> "First Activity"
+"First Activity" --> (*)
+
+@enduml
+Label on arrows
+
+@startuml
+
+(*) --> "First Activity"
+-->[You can put also labels] "Second Activity"
+--> (*)
+
+@enduml
+Changing arrow direction
+@startuml
+
+(*) -up-> "First Activity"
+-right-> "Second Activity"
+--> "Third Activity"
+-left-> (*)
+
+@enduml
+Branches
+@startuml
+(*) --> "Initialization"
+
+if "Some Test" then
+  -->[true] "Some Activity"
+  --> "Another activity"
+  -right-> (*)
+else
+  ->[false] "Something else"
+  -->[Ending process] (*)
+endif
+
+@enduml
+More on Branches
+@startuml
+
+(*) --> if "Some Test" then
+
+  -->[true] "activity 1"
+  
+  if "" then
+    -> "activity 3" as a3
+  else
+    if "Other test" then
+      -left-> "activity 5"
+    else
+      --> "activity 6"
+    endif
+  endif
+  
+else
+
+  ->[false] "activity 2"
+  
+endif
+
+a3 --> if "last test" then
+  --> "activity 7"
+else
+  -> "activity 8"
+endif
+
+@enduml
+Synchronization
+@startuml
+
+(*) --> ===B1=== 
+--> "Parallel Activity 1"
+--> ===B2===
+
+===B1=== --> "Parallel Activity 2"
+--> ===B2===
+
+--> (*)
+
+@enduml
+Notes
+@startuml
+
+(*) --> "Some Activity"
+note right: This activity has to be defined
+"Some Activity" --> (*)
+note left
+ This note is on
+ several lines
+end note
+
+@enduml
+Partition
+@startuml
+
+partition Conductor {
+  (*) --> "Climbs on Platform"
+  --> === S1 ===
+  --> Bows
+}
+
+partition Audience #LightSkyBlue {
+  === S1 === --> Applauds
+}
+
+partition Conductor {
+  Bows --> === S2 ===
+  --> WavesArmes
+  Applauds --> === S2 ===
+}
+
+partition Orchestra #CCCCEE {
+  WavesArmes --> Introduction
+  --> "Play music"
+}
+
+@enduml
+</pre>
+<pre id="component">
+Components
+@startuml
+
+[First component]
+[Another component] as Comp2  
+component Comp3
+component [Last\ncomponent] as Comp4
+
+@enduml
+Interfaces
+@startuml
+
+() "First Interface"
+() "Another interface" as Interf2
+interface Interf3
+interface "Last\ninterface" as Interf4
+
+@enduml
+Basic example
+
+@startuml
+
+DataAccess - [First Component] 
+[First Component] ..> HTTP : use
+
+@enduml
+
+Using notes
+@startuml
+
+interface "Data Access" as DA
+
+DA - [First Component] 
+[First Component] ..> HTTP : use
+
+note left of HTTP : Web Service only
+
+note right of [First Component]
+  A note can also
+  be on several lines
+end note
+
+@enduml
+Grouping Components
+@startuml
+
+package "Some Group" {
+  HTTP - [First Component]
+  [Another Component]
+}
+ 
+node "Other Groups" {
+  FTP - [Second Component]
+  [First Component] --> FTP
+} 
+
+cloud {
+  [Example 1]
+}
+
+
+database "MySql" {
+  folder "This is my folder" {
+    [Folder 3]
+  }
+  frame "Foo" {
+    [Frame 4]
+  }
+}
+
+
+[Another Component] --> [Example 1]
+[Example 1] --> [Folder 3]
+[Folder 3] --> [Frame 4]
+
+@enduml
+Changing arrows direction
+@startuml
+[Component] -left-> left 
+[Component] -right-> right 
+[Component] -up-> up
+[Component] -down-> down
+@enduml
+</pre>
+<pre id="state">
+Simple State
+
+@startuml
+
+[*] --> State1
+State1 --> [*]
+State1 : this is a string
+State1 : this is another string
+
+State1 -> State2
+State2 --> [*]
+
+@enduml
+Composite state
+@startuml
+
+[*] --> NotShooting
+
+state NotShooting {
+  [*] --> Idle
+  Idle --> Configuring : EvConfig
+  Configuring --> Idle : EvConfig
+}
+
+state Configuring {
+  [*] --> NewValueSelection
+  NewValueSelection --> NewValuePreview : EvNewValue
+  NewValuePreview --> NewValueSelection : EvNewValueRejected
+  NewValuePreview --> NewValueSelection : EvNewValueSaved
+  
+  state NewValuePreview {
+     State1 -> State2
+  }
+  
+}
+@enduml
+Concurrent state
+
+@startuml
+[*] --> Active
+
+state Active {
+  [*] -> NumLockOff
+  NumLockOff --> NumLockOn : EvNumLockPressed
+  NumLockOn --> NumLockOff : EvNumLockPressed
+  --
+  [*] -> CapsLockOff
+  CapsLockOff --> CapsLockOn : EvCapsLockPressed
+  CapsLockOn --> CapsLockOff : EvCapsLockPressed
+  --
+  [*] -> ScrollLockOff
+  ScrollLockOff --> ScrollLockOn : EvCapsLockPressed
+  ScrollLockOn --> ScrollLockOff : EvCapsLockPressed
+}
+
+@enduml
+Arrow direction
+@startuml
+
+[*] -up-> First
+First -right-> Second
+Second --> Third
+Third -left-> Last
+
+@enduml
+Note
+@startuml
+
+[*] --> Active
+Active --> Inactive
+
+note left of Active : this is a short\nnote
+
+note right of Inactive
+  A note can also
+  be defined on
+  several lines
+end note
+
+@enduml
+</pre>
+<pre id="object">
+Definition of objects
+@startuml
+object firstObject
+object "My Second Object" as o2
+@enduml
+Relations between objects
+
+@startuml
+object Object01
+object Object02
+object Object03
+object Object04
+object Object05
+object Object06
+object Object07
+object Object08
+
+Object01 <|-- Object02
+Object03 *-- Object04
+Object05 o-- "4" Object06
+Object07 .. Object08 : some labels
+@enduml
+Adding fields
+@startuml
+object user {
+  name = "Dummy"
+  id = 123
+}
+@enduml
+
+</pre>
+<pre id="deployment">
+Declaring element
+@startuml
+artifact artifact
+actor actor
+folder folder
+node node
+frame frame
+cloud cloud
+database database
+storage storage
+agent agent
+usecase usecase
+component component
+boundary boundary
+control control
+entity entity
+interface interface
+@enduml
+Linking
+@startuml
+
+node node1
+node node2
+node node3
+node node4
+node node5
+node1 -- node2
+node1 .. node3
+node1 ~~ node4
+node1 == node5
+
+@enduml
+Packages
+@startuml
+artifact Foo1 {
+  folder Foo2
+}
+
+folder Foo3 {
+  artifact Foo4
+}
+
+frame Foo5 {
+  database Foo6
+}
+
+@enduml
+</pre>
+<pre id="timing">
+Declaring participant
+@startuml
+robust "Web Browser" as WB
+concise "Web User" as WU
+
+@0
+WU is Idle
+WB is Idle
+
+@100
+WU is Waiting
+WB is Processing
+
+@300
+WB is Waiting
+@enduml
+Adding message
+@startuml
+robust "Web Browser" as WB
+concise "Web User" as WU
+
+@0
+WU is Idle
+WB is Idle
+
+@100
+WU -> WB : URL
+WU is Waiting
+WB is Processing
+
+@300
+WB is Waiting
+
+@enduml
+Relative time
+@startuml
+robust "DNS Resolver" as DNS
+robust "Web Browser" as WB
+concise "Web User" as WU
+
+@0
+WU is Idle
+WB is Idle
+DNS is Idle
+
+@+100
+WU -> WB : URL
+WU is Waiting
+WB is Processing
+
+@+200
+WB is Waiting
+WB -> DNS@+50 : Resolve URL
+
+@+100
+DNS is Processing
+
+@+300
+DNS is Idle
+
+@enduml
+Participant oriented
+@startuml
+robust "Web Browser" as WB
+concise "Web User" as WU
+
+@WB
+0 is idle
++200 is Proc.
++100 is Waiting
+
+@WU
+0 is Waiting
++500 is ok
+@enduml
+Initial state
+@startuml
+robust "Web Browser" as WB
+concise "Web User" as WU
+
+WB is Initializing
+WU is Absent
+
+@WB
+0 is idle
++200 is Processing
++100 is Waiting
+
+@WU
+0 is Waiting
++500 is ok
+@enduml
+</pre>
   <div id="tip">
-	  <select>
+	  <select onchange="showTip(this.value)">
+	    <option value="">---Select Diagram---</option>
 	  	<option value="uc">Use Case Diagram</option>
 	  	<option value="seq">Sequence Diagram</option>
-	  	<option value="cd">Class Diagram</option>
-	  	<option value="ad">Activity Diagram</option>
-	  	<option value="cd">Component Diagram</option>
-	  	<option value="sd">State Diagram</option>
-	  	<option value="od">Object Diagram</option>
-	  	<option value="dd">Deployment Diagram</option>
-	  	<option value="td">Timing Diagram</option>
+	  	<option value="class">Class Diagram</option>
+	  	<option value="activity">Activity Diagram</option>
+	  	<option value="component">Component Diagram</option>
+	  	<option value="state">State Diagram</option>
+	  	<option value="object">Object Diagram</option>
+	  	<option value="deployment">Deployment Diagram</option>
+	  	<option value="timing">Timing Diagram</option>
 	  </select>
-	  <div id="uc">
-	  	<div class="Usecases">
-			<pre>
-![](/svg?			
-  {{First usecase}};;
-  {{Another usecase}} as {{UC2}};;  
-  usecase UC3;;
-  usecase {{Last\nusecase}} as UC4;;
-)
-			</pre>
-			<img src="/svg?
-{{First usecase}};;
-{{Another usecase}} as {{UC2}};;  
-usecase UC3;;
-usecase {{Last usecase}} as UC4;;
-			"/>	
-		</div>
-		<div class="Actors">
-			<pre>
-![](/svg?  
-  :First Actor:;;
-  :Another\nactor: as Men2;;  
-  actor Men3;;
-  actor :Last actor: as Men4;;
-)
-			</pre>
-			<img src="/svg?
-:First Actor:;;
-:Another\nactor: as Men2;;  
-actor Men3;;
-actor :Last actor: as Men4;;
-			"/>	
-		</div>
-		<div class="description">
-			<pre>
-![](/svg?
-  usecase UC1 as "You can use ;;
-  several lines to define your usecase;;
-  You can also use separators. ;;
-  --;;
-  Several separators are possible. ;;
-  ==;;
-  And you can add titles:;;
-  --Conclusion--;;
-  This allows large description.";;
-)
-			</pre>
-			<img src="/svg?
-usecase UC1 as %22You can use ;;
-several lines to define your usecase;;
-You can also use separators. ;;
---;;
-Several separators are possible. ;;
-==;;
-And you can add titles:;;
---Conclusion--;;
-This allows large description.%22;;
-			"/>	
-		</div>	  	
-		<div class="example">
-			<pre>
-![](/svg?
-  User -> {{Start}};;
-  User --> {{Use the application}} : A small label;;
-  :Main Admin: ---> {{Use the application}} : This is\nyet another\nlabel;;
-)
-			</pre>
-			<img src="/svg?
-User -> {{Start}};;
-User --> {{Use the application}} : A small label;;
-:Main Admin: ---> {{Use the application}} : This is\nyet another\nlabel;;
-			"/>	
-		</div>	  			  	
-
-		<div class="Extension">
-			<pre>
-![](/svg?  
-  :Main Admin: as Admin;;
-  (Use the application) as (Use);;
-  User <|-- Admin;;
-  (Start) <|-- (Use);;
-)
-			</pre>
-			<img src="/svg?
-:Main Admin: as Admin;;
-(Use the application) as (Use);;
-User <|-- Admin;;
-(Start) <|-- (Use);;
-			"/>	
-		</div>	  			  	
-
-		<div class="notes">
-			<pre>
-![](/svg?
-  :Main Admin: as Admin;;
-  {{Use the application}} as {{Use}};;
-
-  User -> {{Start}};;
-  User --> {{Use}};;
-
-  Admin ---> {{Use}};;
-
-  note right of Admin : This is an example. ;;
-
-  note right of {{Use}};;
-    A note can also;;
-    be on several lines;;
-  end note;;
-
-  note "This note is connected\nto several objects." as N2;;
-  {{Start}} .. N2;;
-  N2 .. {{Use}};;  
-)
-			</pre>
-			<img src="/svg?
-:Main Admin: as Admin;;
-{{Use the application}} as {{Use}};;
-User -> {{Start}};;
-User --> {{Use}};;
-Admin ---> {{Use}};;
-note right of Admin : This is an example. ;;
-note right of {{Use}};;
-  A note can also;;
-  be on several lines;;
-end note;;
-note %22This note is connected\nto several objects.%22 as N2;;
-{{Start}} .. N2;;
-N2 .. {{Use}};;
-  			"/>	
-		</div>	  			  	
-
-		<div class="Stereotypes">
-			<pre>
-![](/svg?  
-  User << Human >>;;
-  :Main Database: as MySql << Application >>;;
-  {{Start}} << One Shot >>;;
-  {{Use the application}} as {{Use}} << Main >>;;
-
-  User -> {{Start}};;
-  User --> {{Use}};;
-
-  MySql --> {{Use}};;
-)
-			</pre>
-			<img src="/svg?
-User << Human >>;;
-:Main Database: as MySql << Application >>;;
-{{Start}} << One Shot >>;;
-{{Use the application}} as {{Use}} << Main >>;;
-User -> {{Start}};;
-User --> {{Use}};;
-MySql --> {{Use}};;
-			"/>	
-		</div>	  			  	
-
-		<div class="direction">
-			<pre>
-![](/svg?
-  :user: -left-> {{dummyLeft}};; 
-  :user: -right-> {{dummyRight}};; 
-  :user: -up-> {{dummyUp}};;
-  :user: -down-> {{dummyDown}};;
-)
-			</pre>
-			<img src="/svg?
-:user: -left-> {{dummyLeft}};; 
-:user: -right-> {{dummyRight}};; 
-:user: -up-> {{dummyUp}};;
-:user: -down-> {{dummyDown}};;
-			"/>	
-		</div>	  			  	
-
-		<div class="Complete">
-			<pre>
-![](/svg?
-  left to right direction;;
-  actor customer;;
-  actor clerk;;
-  rectangle checkout {;;
-    customer -- {{checkout}};;
-    {{checkout}} .> {{payment}} : include;;
-    {{help}} .> {{checkout}} : extends;;
-    {{checkout}} -- clerk;;
-  }
-)
-			</pre>
-			<img src="/svg?
-left to right direction;;
-actor customer;;
-actor clerk;;
-rectangle checkout {;;
-  customer -- {{checkout}};;
-  {{checkout}} .> {{payment}} : include;;
-  {{help}} .> {{checkout}} : extends;;
-  {{checkout}} -- clerk;;
-}
-			"/>	
-		</div>
-	  </div>
-	  
-	  <div id="seq">
-	  	<div class="basic">
-			<pre>
-![](/svg?
-  Alice -> Bob: Authentication Request;;
-  Bob --> Alice: Authentication Response;;
-  Alice -> Bob: Another authentication Request;;
-  Alice <-- Bob: another authentication Response;;
-)
-			</pre>
-			<img src="/svg?
-Alice -> Bob: Authentication Request;;
-Bob --> Alice: Authentication Response;;
-Alice -> Bob: Another authentication Request;;
-Alice <-- Bob: another authentication Response;;
-			"/>	
-		</div>
-	  	<div class="participant">
-			<pre>
-![](/svg?  
-  actor Foo1;;
-  boundary Foo2;;
-  control Foo3;;
-  entity Foo4;;
-  database Foo5;;
-  Foo1 -> Foo2 : To boundary;;
-  Foo1 -> Foo3 : To control;;
-  Foo1 -> Foo4 : To entity;;
-  Foo1 -> Foo5 : To database;;
-)
-			</pre>
-			<img src="/svg?
-actor Foo1;;
-boundary Foo2;;
-control Foo3;;
-entity Foo4;;
-database Foo5;;
-Foo1 -> Foo2 : To boundary;;
-Foo1 -> Foo3 : To control;;
-Foo1 -> Foo4 : To entity;;
-Foo1 -> Foo5 : To database;;
-			"/>	
-		</div>
-
-	  	<div class="">
-			<pre>
-![](/svg?  
-)
-			</pre>
-			<img src="/svg?
-			"/>	
-		</div>
-		
-	  
+	  <div id="tipview">
 	  </div>
   </div>
+  <input id="openfile" type="file" style="display:none" onchange="openFile()"/>
+  </body>
+  <script>
+  	
+	var simplemde = new SimpleMDE({
+		toolbar: [{
+					name: "open",
+					action: function (editor){
+						openFileBrowser();			
+					},
+					className: "fa fa-folder-open-o",
+					title: "open"
+				},
+				{
+					name: "save",
+					action: function (editor){
+						alert('save')
+						// Add your own code
+					},
+					className: "fa fa-floppy-o",
+					title: "save"
+				},"|","bold", "italic","strikethrough","|","heading", "|","code", "quote","|","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule",
+		"|","preview","side-by-side","fullscreen","|","guide"
+				
+			],
+	});
+	simplemde.toggleSideBySide();
+	function openFileBrowser(){
+	    var openfile = document.getElementById('openfile');
+	    openfile.onchange = openFile;
+	    openfile.click();
+	}
+	function openFile(event){
+		var file = event.target.files[0];
+		console.log(file);
+        var fileReader = new FileReader();
+        fileReader.onload = function(e) {
+        	simplemde.value(e.target.result);
+        };
+        fileReader.readAsText(file);
+	}
+	function addDiagram(){
+		var _url = this.diagram;
+		var _prompt = prompt;
+		prompt = function(){
+			return _url;
+		};
+		var _promptURLs = simplemde.options.promptURLs; 
+		simplemde.options.promptURLs = true;
+		simplemde.drawImage();
+		prompt = _prompt; 
+		simplemde.options.promptURLs = _promptURLs; 
+	}
+	function showTip(id){
+		var tipview = document.getElementById('tipview');
+		tipview.innerHTML = '';
+		if(!id)return;
+		text = document.getElementById(id).innerText;
+		var lines = text.trim().split(/[\r\n]+/);
+		var buff,title;
+		for(var i = 0;i<lines.length;i++){
+			var line = lines[i];
+			if('@startuml' == line.trim()){
+				buff = '';
+			} else if('@enduml' == line.trim()){
+				var fieldset = document.createElement('fieldset');
+				var pre = document.createElement('pre');
+				pre.appendChild(document.createTextNode('![](/svg?\n'+buff+')'));
+				var img = document.createElement('img');
+				img.src = '/svg?'+buff;
+				var legend = document.createElement('legend');
+				legend.appendChild(document.createTextNode(title+'[+]'));
+				fieldset.appendChild(legend);
+				legend.diagram = '/svg?\n'+buff;
+				legend.onclick=addDiagram;
+				fieldset.appendChild(pre);
+				fieldset.appendChild(img);
+				tipview.appendChild(fieldset);
+				buff=undefined;
+			} else if(buff!==undefined){
+				buff+=line.replace(/\(/g,'{{').replace(/\)/g,'}}').replace(/#/g,'@@')+';;\n';
+			} else {
+				title = line.trim();
+			}
+		}
+	}		
+  </script>
   
 </html>

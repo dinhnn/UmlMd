@@ -81,7 +81,7 @@ public class PlantUmlVerticle extends AbstractVerticle {
       return;
     }
     try {
-      uml = URLDecoder.decode(uml, "UTF-8").replace(";;", "\n").replace("{{","(").replace("}}",")").replace('@','#');
+      uml = URLDecoder.decode(uml, "UTF-8").replace(";;", "\n").replace("{{","(").replace("}}",")").replace("@@","#");
     } catch (UnsupportedEncodingException e) {
       LOG.error(e);
     }
