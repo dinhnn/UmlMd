@@ -1,62 +1,74 @@
 <html>
 <head>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-	<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-	<style>
-		.CodeMirror-fullscreen {
-			right:300px!important;			
-			width: calc(100% - 300px)!important;			
-		}
-		.CodeMirror-sided {
-			left:auto!important;
-			padding:0;			
-			width: calc(50% - 300px)!important;			
-		}
-		.editor-preview-side{
-			left:0!important;
-			right:auto!important;
-		}
-		#tip{
-			position:fixed;
-			right:0px;
-			width:300px;
-			top:0px;			
-			z-index:9999;
-			border-left:1px solid gray;
-			height:100%;			
-		}
-		#tip > select{
-			width:300px;
-			height:32px;			
-		}
-		#tip > div{
-			height:calc(100% - 32px);
-			/*display:none;*/
-			overflow-y:auto;			
-		}
-		#tip > div > fieldset{
-			border: 1px solid;
-			margin:4px;
-			overflow-x:auto;			
-		}
-		#tip > div > fieldset >legend{
-			cursor:hand;
-		}
-		#tip > div img{
-			max-width:250px;
-		}
-		#plantuml,#uc{
-			display:none;
-		}
-		body>pre{
-			display:none;
-		}
-	</style>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<style>
+.CodeMirror-fullscreen {
+	right: 300px !important;
+	width: calc(100% - 300px) !important;
+}
+
+.CodeMirror-sided {
+	left: auto !important;
+	padding: 0;
+	width: calc(50% - 300px) !important;
+}
+
+.editor-preview-side {
+	left: 0 !important;
+	right: auto !important;
+}
+
+#tip {
+	position: fixed;
+	right: 0px;
+	width: 300px;
+	top: 0px;
+	z-index: 9999;
+	border-left: 1px solid gray;
+	height: 100%;
+}
+
+#tip>select {
+	width: 300px;
+	height: 32px;
+	display:block;
+}
+
+#tip>div {
+	height: calc(100% - 64px);
+	/*display:none;*/
+	overflow-y: auto;
+}
+
+#tip>div>fieldset {
+	border: 1px solid;
+	margin: 4px;
+	overflow-x: auto;
+}
+
+#tip>div>fieldset>legend {
+	cursor: hand;
+}
+
+#tip>div img {
+	max-width: 250px;
+}
+
+#plantuml, #uc {
+	display: none;
+}
+
+body>pre {
+	display: none;
+}
+</style>
 </head>
-<body>  
-  <textarea>
+<body>
+	<textarea>
   </textarea>
-<pre id="uc">
+	<pre id="uc">
 Usecases
 @startuml
 
@@ -164,7 +176,7 @@ rectangle checkout {
 @enduml
 
 </pre>
-<pre id="seq">
+	<pre id="seq">
 Basic examples
 @startuml
 Alice -> Bob: Authentication Request
@@ -360,7 +372,7 @@ Bob->Alice: First message
 @enduml
 
 </pre>
-<pre id="class">
+	<pre id="class">
 Relations between classes
 @startuml
 Class01 <|-- Class02
@@ -508,7 +520,7 @@ class Enrollment {
 }
 @enduml
 </pre>
-<pre id="activity">
+	<pre id="activity">
 Simple Activity
 @startuml
 
@@ -629,7 +641,7 @@ partition Orchestra #CCCCEE {
 
 @enduml
 </pre>
-<pre id="component">
+	<pre id="component">
 Components
 @startuml
 
@@ -714,7 +726,7 @@ Changing arrows direction
 [Component] -down-> down
 @enduml
 </pre>
-<pre id="state">
+	<pre id="state">
 Simple State
 
 @startuml
@@ -796,7 +808,7 @@ end note
 
 @enduml
 </pre>
-<pre id="object">
+	<pre id="object">
 Definition of objects
 @startuml
 object firstObject
@@ -828,7 +840,7 @@ object user {
 @enduml
 
 </pre>
-<pre id="deployment">
+	<pre id="deployment">
 Declaring element
 @startuml
 artifact artifact
@@ -877,7 +889,7 @@ frame Foo5 {
 
 @enduml
 </pre>
-<pre id="timing">
+	<pre id="timing">
 Declaring participant
 @startuml
 robust "Web Browser" as WB
@@ -971,26 +983,160 @@ WU is Absent
 +500 is ok
 @enduml
 </pre>
-  <div id="tip">
-	  <select onchange="showTip(this.value)">
-	    <option value="">---Select Diagram---</option>
-	  	<option value="uc">Use Case Diagram</option>
-	  	<option value="seq">Sequence Diagram</option>
-	  	<option value="class">Class Diagram</option>
-	  	<option value="activity">Activity Diagram</option>
-	  	<option value="component">Component Diagram</option>
-	  	<option value="state">State Diagram</option>
-	  	<option value="object">Object Diagram</option>
-	  	<option value="deployment">Deployment Diagram</option>
-	  	<option value="timing">Timing Diagram</option>
-	  </select>
-	  <div id="tipview">
-	  </div>
-  </div>
-  <input id="openfile" type="file" style="display:none" onchange="openFile()"/>
-  </body>
-  <script>
-  	
+	<pre id="wireframe">
+Basic widgets
+
+@startuml
+salt
+{
+  Just plain text
+  [This is my button]
+  ()  Unchecked radio
+  (X) Checked radio
+  []  Unchecked box
+  [X] Checked box
+  "Enter text here   "
+  ^This is a droplist^
+}
+@enduml
+Using grid
+@startuml
+salt
+{
+  Login    | "MyName   "
+  Password | "****     "
+  [Cancel] | [  OK   ]
+}
+@enduml
+Using separator
+@startuml
+salt
+{
+  Text1
+  ..
+  "Some field"
+  ==
+  Note on usage
+  ~~
+  Another text
+  --
+  [Ok]
+}
+@enduml
+Tree widget
+@startuml
+salt
+{
+  {T
+ +World
+ ++America
+ +++Canada
+ +++USA
+ ++++New York
+ ++++Boston
+ +++Mexico
+ ++Europe
+ +++Italy
+ +++Germany
+ ++++Berlin
+ ++Africa
+}
+}
+@enduml
+Enclosing brackets
+@startuml
+salt
+{
+Name         | "                 "
+Modifiers:   | { (X) public | () default | () private | () protected
+                [] abstract | [] final   | [] static }
+Superclass:  | { "java.lang.Object " | [Browse...] }
+}
+@enduml
+Adding tabs
+@startuml
+salt
+{+
+{/ <b>General | Fullscreen | Behavior | Saving }
+{
+	{ Open image in: | ^Smart Mode^ }
+	[X] Smooth images when zoomed
+	[X] Confirm image deletion
+	[ ] Show hidden images
+}
+[Close]
+}
+@enduml
+Using menu
+@startuml
+salt
+{+
+{* File | Edit | Source | Refactor }
+{/ General | Fullscreen | Behavior | Saving }
+{
+	{ Open image in: | ^Smart Mode^ }
+	[X] Smooth images when zoomed
+	[X] Confirm image deletion
+	[ ] Show hidden images 
+}
+[Close]
+}
+@enduml
+Advanced table
+@startuml
+salt
+{#
+. | Column 2 | Column 3
+Row header 1 | value 1 | value 2
+Row header 2 | A long cell | *
+}
+@enduml
+OpenIconic
+@startuml
+salt
+{
+  Login<&person> | "MyName   "
+  Password<&key> | "****     "
+  [Cancel <&circle-x>] | [OK <&account-login>]
+}
+@enduml
+
+	</pre>
+	<div id="tip">
+		<select onfocus="refreshMenu()" onchange="selectdoc(this)">
+			<option value="data.ucd">Use Case Diagram</option>
+			<optgroup id="ucs" label="Use Case">
+				<option value="_uc">Create new...</option>
+			</optgroup>
+			<optgroup id="uss" label="Use Story">
+				<option value="_us">Create new...</option>
+			</optgroup>
+		</select>
+		<select onchange="showTip(this.value)">
+			<option value="">---Select Diagram---</option>
+			<option value="uc">Use Case Diagram</option>
+			<option value="seq">Sequence Diagram</option>
+			<option value="class">Class Diagram</option>
+			<option value="activity">Activity Diagram</option>
+			<option value="component">Component Diagram</option>
+			<option value="state">State Diagram</option>
+			<option value="object">Object Diagram</option>
+			<option value="deployment">Deployment Diagram</option>
+			<option value="timing">Timing Diagram</option>
+			<option value="wireframe">Wireframe</option>
+		</select>
+		<div id="tipview"></div>
+	</div>
+	<input id="openfile" type="file" style="display: none"
+		onchange="openFile()" />
+</body>
+<script>
+  	var data = {
+  		"ucd":{},
+  		"ucs":[],
+  		"uss":[]
+  	};
+  	var selectedPath = "data.ucd";
 	var simplemde = new SimpleMDE({
 		toolbar: [{
 					name: "open",
@@ -1054,25 +1200,86 @@ WU is Absent
 			} else if('@enduml' == line.trim()){
 				var fieldset = document.createElement('fieldset');
 				var pre = document.createElement('pre');
-				pre.appendChild(document.createTextNode('![](/svg?\n'+buff+')'));
+				pre.appendChild(document.createTextNode('![](/uml?\n'+buff+')'));
 				var img = document.createElement('img');
-				img.src = '/svg?'+buff;
+				img.src = '/uml?'+buff;
 				var legend = document.createElement('legend');
 				legend.appendChild(document.createTextNode(title+'[+]'));
 				fieldset.appendChild(legend);
-				legend.diagram = '/svg?\n'+buff;
+				legend.diagram = '/uml?\n'+buff;
 				legend.onclick=addDiagram;
 				fieldset.appendChild(pre);
 				fieldset.appendChild(img);
 				tipview.appendChild(fieldset);
 				buff=undefined;
 			} else if(buff!==undefined){
-				buff+=line.replace(/\(/g,'{{').replace(/\)/g,'}}').replace(/#/g,'@@')+';;\n';
+				buff+=line.replace(/\(/g,'<[').replace(/\)/g,']>').replace(/#/g,'@@')+';;\n';
 			} else {
 				title = line.trim();
 			}
 		}
-	}		
+	}
+	function selectdoc(sel){
+		eval(selectedPath).val = simplemde.value();
+		var changed; 
+		switch(sel.value){
+		case "_uc":
+			selectedPath = "data.ucs["+data.ucs.length+"]";
+			data["ucs"].push({"val":"# Use Case "+(data.ucs.length+1),"uss":[]});
+			changed = true;
+			break;
+		case "_us":
+			selectedPath = "data.ucs["+data.uss.length+"]";
+			data["uss"].push({"val":"## User Story"+(data.uss.length+1)});
+			changed = true;
+			break;
+		default:
+			selectedPath = sel.value;
+		}
+		simplemde.value(eval(selectedPath).val);
+		if(changed){
+			buildUseCase(document.getElementById('ucs'));
+			buildUseStory(document.getElementById('uss'));
+		}
+	}
+	function refreshMenu(){
+		eval(selectedPath).val = simplemde.value();
+		buildUseCase(document.getElementById('ucs'));
+		buildUseStory(document.getElementById('uss'));
+	}
+	function buildUseCase(group){
+		group.innerHTML = "";
+		console.log(data.ucs);
+		for(var i = 0;i<data.ucs.length;i++){
+			var option = document.createElement("option");
+			option.value = "data.ucs["+i+"]";
+			var m = /#+\s+(.*)/g.exec(data.ucs[i].val);
+			option.innerHTML = '* '+(m?m[1]:("Use Case "+(i+1)));
+			group.appendChild(option);
+			if(selectedPath==option.value)option.selected=true;
+			if(data.ucs[i].uss){
+				for(var j = 0;j<data.ucs[i].uss.length;j++){
+					option = document.createElement("option");
+					option.value = "data.ucs["+i+"].uss["+j+"]";
+					var m = /#+\s+(.*)/g.exec(data.ucs[i].uss[j].val);
+					option.innerHTML = '&nbsp;&nbsp;* '+(m?m[1]:("User Story "+(i+1)));
+					group.appendChild(option);
+					if(selectedPath==option.value)option.selected=true;
+				}
+			}
+			option = document.createElement("option");
+			option.value = "_us";
+			option.innerHTML = "&nbsp;&nbsp;+ Create User Story..."
+			group.appendChild(option);
+		}
+		var option = document.createElement("option");
+		option.value = "_uc";
+		option.innerHTML = "+ Create Use Case..."
+		group.appendChild(option);
+	}
+	function buildUseStory(group){
+	
+	}
   </script>
-  
+
 </html>

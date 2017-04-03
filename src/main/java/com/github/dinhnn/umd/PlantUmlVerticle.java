@@ -54,6 +54,7 @@ public class PlantUmlVerticle extends AbstractVerticle {
   private void service(HttpServerRequest req) {
     String path = req.path();
     switch (path) {
+    case "/uml":
     case "/svg":
       plantuml(req, FileFormat.SVG, "image/svg+xml");
       break;
@@ -81,21 +82,27 @@ public class PlantUmlVerticle extends AbstractVerticle {
       return;
     }
     try {
-      uml = URLDecoder.decode(uml, "UTF-8").replace(";;", "\n").replace("{{","(").replace("}}",")").replace("@@","#");
+      uml = URLDecoder.decode(uml.replace("+","%2B"), "UTF-8").replace(";;", "\n").replace("<[","(").replace("]>",")").replace("@@","#");
     } catch (UnsupportedEncodingException e) {
       LOG.error(e);
     }
     if (!uml.startsWith("@startuml\n")) {
-      uml = "@startuml\n" + uml;
+      if(uml.startsWith("salt")){
+        uml = "@startuml\n" + uml;
+      } else {
+        uml = "@startuml\nskinparam handwritten true\nskinparam monochrome true\n" + uml;
+      }
     }
     if (!uml.startsWith("\n@enduml")) {
       uml = uml + "\n@enduml";
-    }
+    }    
     SourceStringReader reader = new SourceStringReader(uml);
     vertx.<Buffer>executeBlocking(fut -> {
       BufferOutputStream out = new BufferOutputStream();
       try {
         reader.generateImage(out, new FileFormatOption(format, false));
+        reader.getBlocks().forEach(System.out::println);
+        System.out.println("-----");
         fut.complete(out.getBuff());        
       } catch (IOException | RuntimeException e) {
         fut.fail(e);

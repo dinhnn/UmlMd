@@ -22,6 +22,9 @@ sourceCompatibility = '1.8'
 dependencies {
     // The production code uses the SLF4J logging API at compile time
     compile "io.vertx:vertx-core:$version"
+    compile "io.vertx:vertx-web:$version"
+    compile "io.vertx:vertx-auth-jwt:$version"
+    
     compile group: 'net.sourceforge.plantuml', name: 'plantuml', version: '8059'
     runtime files('lib/vizjs.jar')
     compile group: 'com.eclipsesource.j2v8', name: 'J2V8', version: '3.0.2'
