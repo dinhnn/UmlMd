@@ -1222,20 +1222,24 @@ salt
 	function selectdoc(sel){
 		eval(selectedPath).val = simplemde.value();
 		var changed; 
-		switch(sel.value){
-		case "_uc":
-			selectedPath = "data.ucs["+data.ucs.length+"]";
-			data["ucs"].push({"val":"# Use Case "+(data.ucs.length+1),"uss":[]});
-			changed = true;
-			break;
-		case "_us":
-			selectedPath = "data.ucs["+data.uss.length+"]";
-			data["uss"].push({"val":"## User Story"+(data.uss.length+1)});
-			changed = true;
-			break;
-		default:
-			selectedPath = sel.value;
-		}
+		selectedPath = sel.value;
+		if(selectedPath.startsWith("_us_")){
+		  selectedPath = selectedPath.substring(4);
+		  var uc = eval(selectedPath);
+		  selectedPath+=".uss["+uc.uss.length+"]";
+		  uc.uss.push({"val":"## User Story"+(uc.uss.length+1)});
+		  changed = true;
+		} else if(selectedPath=="_uc"){
+		  selectedPath = "data.ucs["+data.ucs.length+"]";
+      data["ucs"].push({"val":"# Use Case "+(data.ucs.length+1),"uss":[]});
+      changed = true;
+		} else if(selectedPath=="_us"){
+		  selectedPath = "data.ucs["+data.uss.length+"]";
+      data["uss"].push({"val":"## User Story"+(data.uss.length+1)});
+      changed = true;
+    } else {
+      selectedPath = sel.value;
+    }
 		simplemde.value(eval(selectedPath).val);
 		if(changed){
 			buildUseCase(document.getElementById('ucs'));
@@ -1251,8 +1255,9 @@ salt
 		group.innerHTML = "";
 		console.log(data.ucs);
 		for(var i = 0;i<data.ucs.length;i++){
+		  var p = "data.ucs["+i+"]";
 			var option = document.createElement("option");
-			option.value = "data.ucs["+i+"]";
+			option.value = p;
 			var m = /#+\s+(.*)/g.exec(data.ucs[i].val);
 			option.innerHTML = '* '+(m?m[1]:("Use Case "+(i+1)));
 			group.appendChild(option);
@@ -1268,7 +1273,7 @@ salt
 				}
 			}
 			option = document.createElement("option");
-			option.value = "_us";
+			option.value = "_us_"+"data.ucs["+i+"]";
 			option.innerHTML = "&nbsp;&nbsp;+ Create User Story..."
 			group.appendChild(option);
 		}
