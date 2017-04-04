@@ -1104,11 +1104,12 @@ salt
 	</pre>
 	<div id="tip">
 		<select onfocus="refreshMenu()" onchange="selectdoc(this)">
+			<option value="data.actor">Actor Diagram</option>
 			<option value="data.ucd">Use Case Diagram</option>
-			<optgroup id="ucs" label="Use Case">
+			<optgroup id="ucs" label="Use Cases">
 				<option value="_uc">Create new...</option>
 			</optgroup>
-			<optgroup id="uss" label="Use Story">
+			<optgroup id="uss" label="General Use Stories">
 				<option value="_us">Create new...</option>
 			</optgroup>
 		</select>
@@ -1131,33 +1132,71 @@ salt
 		onchange="openFile()" />
 </body>
 <script>
-  	var data = {
-  		"ucd":{},
-  		"ucs":[],
-  		"uss":[]
-  	};
-  	var selectedPath = "data.ucd";
+//${PROJECT-NAME}
+//${PROJECT-CODE}
+//${DOCUMENT-CODE}
+//${YEAR}
+//${ACTORS}
+//${USECASES-OVERVIEW}
+
+	var project = localStorage.getItem("project");
+	var data = project?JSON.parse(project):{"actor":{},"ucd":{},"ucs":[],"uss":[]};
+	
+  	var selectedPath = "data.actor";
 	var simplemde = new SimpleMDE({
 		toolbar: [{
-					name: "open",
-					action: function (editor){
-						openFileBrowser();			
-					},
-					className: "fa fa-folder-open-o",
-					title: "open"
+				name: "new",
+				action: function (editor){
+					data = {
+						"actor":{},
+				  		"ucd":{},
+				  		"ucs":[],
+				  		"uss":[]
+				  	};
+					selectedPath = undefined;
+					refreshMenu();
 				},
-				{
-					name: "save",
-					action: function (editor){
-						alert('save')
-						// Add your own code
-					},
-					className: "fa fa-floppy-o",
-					title: "save"
-				},"|","bold", "italic","strikethrough","|","heading", "|","code", "quote","|","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule",
-		"|","preview","side-by-side","fullscreen","|","guide"
-				
-			],
+				className: "fa fa-file-o",
+				title: "New"
+			},{
+				name: "open",
+				action: function (editor){
+					openFileBrowser();			
+				},
+				className: "fa fa-folder-open-o",
+				title: "open"
+			},
+			{
+				name: "save",
+				action: function (editor){
+					eval(selectedPath).val = simplemde.value();
+					localStorage.setItem("project",JSON.stringify(data));
+				},
+				className: "fa fa-floppy-o",
+				title: "save"
+			},
+			{
+				name: "download",
+				action: function (editor){
+					eval(selectedPath).val = simplemde.value();
+					var json = JSON.stringify(data);
+					localStorage.setItem("project", json);
+					var url = window.URL.createObjectURL(new Blob([json], {type: "application/octet-stream"}));
+					var a = document.createElement('a');
+					a.href=url;
+					a.download = "project.json";
+					document.body.append(a);
+					a.click();
+					setTimeout(function() {
+					    window.URL.revokeObjectURL(url);
+					  }, 1500);
+				},
+				className: "fa fa-floppy-o",
+				title: "Download"
+			},"|","bold", "italic","strikethrough","|","heading", "|","code", "quote","|","unordered-list","ordered-list","clean-block","|","link","image","table","horizontal-rule",
+	"|","preview","side-by-side","fullscreen","|","guide"
+			
+		],
 	});
 	simplemde.toggleSideBySide();
 	function openFileBrowser(){
@@ -1170,7 +1209,15 @@ salt
 		console.log(file);
         var fileReader = new FileReader();
         fileReader.onload = function(e) {
-        	simplemde.value(e.target.result);
+		try{
+			project = JSON.parse(e.target.result);
+			data = project;
+			selectedPath = undefined;
+			refreshMenu();
+		}catch(e){
+
+		}
+        	
         };
         fileReader.readAsText(file);
 	}
@@ -1227,19 +1274,23 @@ salt
 		  selectedPath = selectedPath.substring(4);
 		  var uc = eval(selectedPath);
 		  selectedPath+=".uss["+uc.uss.length+"]";
-		  uc.uss.push({"val":"## User Story"+(uc.uss.length+1)});
+		  uc.uss.push({"val":"### User Story"+(uc.uss.length+1),"converconfirm":{"val":"#### Conversation\n* Question1\n* Answer1\n\n#### Confirmation\n* Confirmation1\n* Confirmation2\n"},"scenario":{"val":"#### Scenario\n##### Scenario1\n1.\n2."},"design":{"val":"#### Design"}});
 		  changed = true;
 		} else if(selectedPath=="_uc"){
 		  selectedPath = "data.ucs["+data.ucs.length+"]";
-      data["ucs"].push({"val":"# Use Case "+(data.ucs.length+1),"uss":[]});
-      changed = true;
+		      data["ucs"].push({"val":"# Use Case "+(data.ucs.length+1),"uss":[]});
+		      changed = true;
 		} else if(selectedPath=="_us"){
-		  selectedPath = "data.ucs["+data.uss.length+"]";
-      data["uss"].push({"val":"## User Story"+(data.uss.length+1)});
-      changed = true;
-    } else {
-      selectedPath = sel.value;
-    }
+		  selectedPath = "data.uss["+data.uss.length+"]";
+		      data["uss"].push({"val":"### User Story"+(data.uss.length+1),"converconfirm":{"val":"#### Conversation\n* Question1\n* Answer1\n\n#### Confirmation\n* Confirmation1\n* Confirmation2\n"},"scenario":{"val":"#### Scenario\n##### Scenario1\n1.\n2."},"design":{"val":"#### Design"}});
+		      changed = true;
+		} else if(selectedPath=="_us"){
+				  selectedPath = "data.ucs["+data.uss.length+"]";
+		      data["uss"].push({"val":"## User Story"+(data.uss.length+1)});
+		      changed = true;
+		    } else {
+		      selectedPath = sel.value;
+		    }
 		simplemde.value(eval(selectedPath).val);
 		if(changed){
 			buildUseCase(document.getElementById('ucs'));
@@ -1247,13 +1298,12 @@ salt
 		}
 	}
 	function refreshMenu(){
-		eval(selectedPath).val = simplemde.value();
+		if(selectedPath) eval(selectedPath).val = simplemde.value();
 		buildUseCase(document.getElementById('ucs'));
 		buildUseStory(document.getElementById('uss'));
 	}
 	function buildUseCase(group){
 		group.innerHTML = "";
-		console.log(data.ucs);
 		for(var i = 0;i<data.ucs.length;i++){
 		  var p = "data.ucs["+i+"]";
 			var option = document.createElement("option");
@@ -1270,6 +1320,22 @@ salt
 					option.innerHTML = '&nbsp;&nbsp;* '+(m?m[1]:("User Story "+(i+1)));
 					group.appendChild(option);
 					if(selectedPath==option.value)option.selected=true;
+
+					option = document.createElement("option");
+					option.value = "data.ucs["+i+"].uss["+j+"].converconfirm";
+					option.innerHTML = "&nbsp;&nbsp;&nbsp;* Conversation & Confirmation";
+					group.appendChild(option);
+					if(selectedPath==option.value)option.selected=true;
+					option = document.createElement("option");
+					option.value = "data.ucs["+i+"].uss["+j+"].scenario";
+					option.innerHTML = "&nbsp;&nbsp;&nbsp;* Scenario";
+					group.appendChild(option);
+					if(selectedPath==option.value)option.selected=true;
+					option = document.createElement("option");
+					option.value = "data.ucs["+i+"].uss["+j+"].design";
+					option.innerHTML = "&nbsp;&nbsp;&nbsp;* Design";
+					group.appendChild(option);
+					if(selectedPath==option.value)option.selected=true;
 				}
 			}
 			option = document.createElement("option");
@@ -1283,7 +1349,35 @@ salt
 		group.appendChild(option);
 	}
 	function buildUseStory(group){
-	
+		group.innerHTML = "";
+		for(var i = 0;i<data.uss.length;i++){
+			var p = "data.uss["+i+"]";
+			var option = document.createElement("option");
+			option.value = p;
+			var m = /#+\s+(.*)/g.exec(data.uss[i].val);
+			option.innerHTML = '* '+(m?m[1]:("User Story "+(i+1)));
+			group.appendChild(option);
+			if(selectedPath==option.value)option.selected=true;
+			option = document.createElement("option");
+			option.value = "data.uss["+i+"].converconfirm";
+			option.innerHTML = "&nbsp;&nbsp;* Conversation & Confirmation";
+			group.appendChild(option);
+			if(selectedPath==option.value)option.selected=true;
+			option = document.createElement("option");
+			option.value = "data.uss["+i+"].scenario";
+			option.innerHTML = "&nbsp;&nbsp;* Scenario";
+			group.appendChild(option);
+			if(selectedPath==option.value)option.selected=true;
+			option = document.createElement("option");
+			option.value = "data.uss["+i+"].design";
+			option.innerHTML = "&nbsp;&nbsp;* Design";
+			group.appendChild(option);
+			if(selectedPath==option.value)option.selected=true;
+		}
+		var option = document.createElement("option");
+		option.value = "_us";
+		option.innerHTML = "+ Create Use Story..."
+		group.appendChild(option);
 	}
   </script>
 
