@@ -96,7 +96,7 @@ public class PlantUmlVerticle extends AbstractVerticle {
     if (!uml.startsWith("\n@enduml")) {
       uml = uml + "\n@enduml";
     }    
-    SourceStringReader reader = new SourceStringReader(uml);
+    SourceStringReader reader = new SourceStringReader(uml,"UTF-8");
     vertx.<Buffer>executeBlocking(fut -> {
       BufferOutputStream out = new BufferOutputStream();
       try {
